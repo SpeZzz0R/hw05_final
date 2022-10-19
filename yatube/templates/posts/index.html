@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load cache %}
+
+{% block title %}
+  Последние обновления на сайте
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  {% cache 20 index_page %}
+  {% include 'posts/includes/switcher.html' %}
+  {% include 'posts/includes/index_block.html' %}
+  {% endcache %}
+  {% include 'posts/includes/paginator.html' %}
+</div>
+{% endblock %}

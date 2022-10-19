@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  Технологии
+{% endblock %}
+
+{% block content %}
+{{ just_text }}
+<br><br>
+<h5><strong>Что, использую в работе</strong></h5>
+<img src="{% static 'img/desktop.jpg' %}" width="300" height="175" class="d-inline-block align-top" alt="">
+<img src="{% static 'img/book.jpg' %}" width="300" height="175" class="d-inline-block align-top" alt="">
+{% endblock %}

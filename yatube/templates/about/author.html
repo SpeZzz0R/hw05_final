@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  Об авторе
+{% endblock %}
+
+{% block content %}
+{{ just_text }}
+<br><br>
+<h5><strong>Мое рабочее место</strong></h5>
+<img src="{% static 'img/working_place.jpg' %}" width="400" height="400" class="d-inline-block align-top" alt="">
+{% endblock %}

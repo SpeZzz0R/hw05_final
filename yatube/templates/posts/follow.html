@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load cache %}
+
+{% block title %}
+  Система подписки
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  {% include 'posts/includes/switcher.html' %}
+  {% include 'posts/includes/index_block.html' %}
+  {% include 'posts/includes/paginator.html' %}
+</div>
+{% endblock %}
