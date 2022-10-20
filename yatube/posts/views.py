@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.views.decorators.cache import cache_page
+
 from .models import User, Post, Group, Comment, Follow
 from .forms import PostForm, CommentForm
 
@@ -17,6 +19,7 @@ def get_pagination(posts, request):
     }
 
 
+@cache_page(20, key_prefix='index_page')
 def index(request):
     template = 'posts/index.html'
     context = get_pagination(Post.objects.all(), request)

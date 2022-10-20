@@ -58,6 +58,7 @@ class PostViewTests(TestCase):
         self.author = Client()
         self.author_post = PostViewTests.user
         self.author.force_login(self.author_post)
+        cache.clear()
 
     def test_view_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
@@ -176,15 +177,19 @@ class PostViewTests(TestCase):
 
     def test_cache_index(self):
         """Проверка работы кэша на главной странице."""
-        response_0 = self.authorized_client.get(reverse('posts:index'))
-        post_0 = response_0.content
-        response_1 = self.authorized_client.get(reverse('posts:index'))
-        post_1 = response_1.content
-        self.assertEqual(post_0, post_1)
+        post_0 = Post.objects.create(
+            text='Тестовый пост',
+            author=self.user)
+        response_0 = self.authorized_client.get(
+            reverse('posts:index')).content
+        post_0.delete()
+        response_1 = self.authorized_client.get(
+            reverse('posts:index')).content
+        self.assertEqual(response_0, response_1)
         cache.clear()
-        response_2 = self.authorized_client.get(reverse('posts:index'))
-        post_2 = response_2.content
-        self.assertNotEqual(post_1, post_2)
+        response_2 = self.authorized_client.get(
+            reverse('posts:index')).content
+        self.assertNotEqual(response_1, response_2)
 
 
 class PaginatorViewsTests(TestCase):
@@ -232,6 +237,7 @@ class PaginatorViewsTests(TestCase):
         self.author = Client()
         self.author_post = PaginatorViewsTests.user
         self.author.force_login(self.author_post)
+        cache.clear()
 
     def test_first_page_contains_ten_records(self):
         """Проверка количества переданных записей на первой странице."""

@@ -30,6 +30,11 @@ class PostFormsTests(TestCase):
             author=cls.user,
             group=cls.group,
         )
+        cls.group2 = Group.objects.create(
+            title='Тестовая группа 2',
+            slug='test-slug2',
+            description='Тестовое описание 2'
+        )
         cls.small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
             b'\x01\x00\x80\x00\x00\x00\x00\x00'
@@ -63,6 +68,11 @@ class PostFormsTests(TestCase):
 
     def test_form_post_create(self):
         """Проверка создания новой записи в базе данных."""
+        post = Post.objects.create(
+            text='Тестовый пост',
+            author=self.user,
+            group=self.group,
+        )
         posts_count = Post.objects.count()
         response = self.authorized_client.post(
             reverse('posts:post_create'), data=self.form_fields, follow=True)
@@ -75,12 +85,32 @@ class PostFormsTests(TestCase):
                              reverse(
                                  'posts:profile',
                                  args=[PostFormsTests.post.author.username]))
+        self.assertEqual(post.author, self.user)
+        self.assertEqual(post.group_id, self.form_fields['group'])
 
     def test_form_post_edit(self):
         """Проверка изменения поста в базе данных."""
+        post_0 = post_1 = Post.objects.create(
+            text='Тестовый пост',
+            author=self.user,
+            group=self.group,
+        )
+        response_0 = self.authorized_client.get(
+            reverse('posts:group_list', args=[PostFormsTests.group.slug]))
+        post_2 = Post.objects.create(
+            text='Тестовый пост',
+            author=self.user,
+            group=self.group2,
+        )
+        post_0 = post_2
+        response_2 = self.authorized_client.get(
+            reverse('posts:group_list', args=[PostFormsTests.group.slug]))
+
         self.author.post(
             reverse('posts:post_edit', args=[PostFormsTests.post.id]),
             data=self.form_fields, follow=True)
         self.assertTrue(Post.objects.filter(text=self.form_fields['text'],
                                             group=self.group.id).exists()
                         )
+        self.assertIn(post_1, response_0.context['page_obj'].object_list)
+        self.assertNotIn(post_0, response_2.context['page_obj'].object_list)

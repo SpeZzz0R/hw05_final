@@ -30,9 +30,10 @@ class Post(models.Model):
         null=True
     )
     image = models.ImageField(
-        verbose_name='Картинка',
         upload_to='posts/',
-        blank=True
+        blank=True,
+        verbose_name='Картинка',
+        help_text='Выберите картинку'
     )
 
     class Meta:
@@ -62,11 +63,15 @@ class Comment(models.Model):
         Post,
         related_name='comments',
         on_delete=models.CASCADE,
+        verbose_name='Пост',
+        help_text='Выберите пост'
     )
     author = models.ForeignKey(
         User,
         related_name='comments',
         on_delete=models.CASCADE,
+        verbose_name='Автор',
+        help_text='Выберите автора'
     )
     text = models.TextField(
         verbose_name='Комментарий',
@@ -88,8 +93,8 @@ class Follow(models.Model):
     user = models.ForeignKey(
         User,
         related_name='follower',
-        verbose_name='Подписчик',
         on_delete=models.CASCADE,
+        verbose_name='Подписчик'
     )
     author = models.ForeignKey(
         User,

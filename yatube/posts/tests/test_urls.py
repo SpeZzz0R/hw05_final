@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.test import TestCase, Client
 from http import HTTPStatus
 from posts.models import Group, Post
@@ -66,6 +67,7 @@ class PostURLTests(TestCase):
         self.author = Client()
         self.author_post = PostURLTests.user
         self.author.force_login(self.author_post)
+        cache.clear()
 
     def test_post_for_guest_url_exists_at_desired_location(self):
         """Проверка доступности страниц в приложении posts для гостя."""
